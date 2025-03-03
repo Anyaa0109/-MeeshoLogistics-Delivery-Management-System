@@ -1,0 +1,92 @@
+Create tables ( in the order) 
+Since Orders references Delivery_Partners and Shipments & Returns reference Orders, the correct order is:
+1.Delivery_Partners
+2.Orders
+3.Shipments
+4.Returns
+CREATE TABLE Delivery_Partners (
+    partner_id INT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    phone VARCHAR(15) UNIQUE NOT NULL,
+    vehicle_type VARCHAR(20) NOT NULL,
+    availability_status VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE Orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT NOT NULL,
+    product_id INT NOT NULL,
+    order_date DATE NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    delivery_partner_id INT,  -- Renamed from "partner_id"
+    total_price NUMBER(10,2),  -- New column for total price
+    FOREIGN KEY (delivery_partner_id) REFERENCES Delivery_Partners(partner_id)
+);
+
+CREATE TABLE Shipments (
+    shipment_id INT PRIMARY KEY,
+    order_id INT NOT NULL,
+    partner_id INT NOT NULL,
+    dispatch_date DATE NOT NULL,
+    delivery_date DATE,
+    status VARCHAR(20) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (partner_id) REFERENCES Delivery_Partners(partner_id)
+);
+
+CREATE TABLE Returns (
+    return_id INT PRIMARY KEY,
+order_id INT NOT NULL,
+customer_id INT NOT NULL,
+    return_reason VARCHAR(255) NOT NULL,
+    refund_status VARCHAR(20) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id)
+);
+
+
+
+
+ Inserting the values 
+
+Delivery_Partners
+
+INSERT INTO Delivery_Partners (partner_id, name, phone, vehicle_type, availability_status)
+SELECT 1, 'Ravi Singh', '8888888888', 'Truck', 'Available' FROM dual UNION ALL
+SELECT 2, 'Anjali Gupta', '7777777777', 'Bike', 'Unavailable' FROM dual UNION ALL
+SELECT 3, 'Rajesh Patel', '6666666666', 'Van', 'Available' FROM dual UNION ALL
+SELECT 4, 'Meera Roy', '5555555555', 'Truck', 'Available' FROM dual;
+
+COMMIT;
+
+
+Orders 
+
+INSERT INTO Orders (order_id, customer_id, product_id, order_date, status)
+SELECT 1, 101, 301, TO_DATE('2024-01-10', 'YYYY-MM-DD'), 'Shipped' FROM dual UNION ALL
+SELECT 2, 102, 302, TO_DATE('2024-01-12', 'YYYY-MM-DD'), 'Pending' FROM dual UNION ALL
+SELECT 3, 103, 303, TO_DATE('2024-01-15', 'YYYY-MM-DD'), 'Delivered' FROM dual UNION ALL
+SELECT 4, 104, 304, TO_DATE('2024-01-18', 'YYYY-MM-DD'), 'Shipped' FROM dual;
+
+COMMIT;
+
+
+Shipments 
+
+INSERT INTO Shipments (shipment_id, order_id, partner_id, dispatch_date, delivery_date, status)
+SELECT 1, 1, 1, TO_DATE('2024-01-10', 'YYYY-MM-DD'), TO_DATE('2024-01-12', 'YYYY-MM-DD'), 'Delivered' FROM dual UNION ALL
+SELECT 2, 2, 2, TO_DATE('2024-01-12', 'YYYY-MM-DD'), TO_DATE('2024-01-14', 'YYYY-MM-DD'), 'Pending' FROM dual UNION ALL
+SELECT 3, 3, 3, TO_DATE('2024-01-15', 'YYYY-MM-DD'), TO_DATE('2024-01-18', 'YYYY-MM-DD'), 'Delivered' FROM dual UNION ALL
+SELECT 4, 4, 4, TO_DATE('2024-01-18', 'YYYY-MM-DD'), TO_DATE('2024-01-20', 'YYYY-MM-DD'), 'Shipped' FROM dual;
+
+COMMIT;
+
+
+Returns
+
+INSERT INTO Returns (return_id, order_id, customer_id, return_reason, refund_status)
+SELECT 1, 1, 101, 'Damaged Product', 'Refunded' FROM dual UNION ALL
+SELECT 2, 3, 103, 'Wrong Product Delivered', 'Pending' FROM dual UNION ALL
+SELECT 3, 4, 104, 'Customer Changed Mind', 'Pending' FROM dual;
+
+COMMIT;
+
