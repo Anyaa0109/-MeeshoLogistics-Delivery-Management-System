@@ -20,7 +20,7 @@ CREATE TABLE Orders (
     status VARCHAR(20) NOT NULL,
     delivery_partner_id INT,  -- Renamed from "partner_id"
     total_price NUMBER(10,2),  -- New column for total price
-    FOREIGN KEY (delivery_partner_id) REFERENCES Delivery_Partners(partner_id)
+    FOREIGN KEY (partner_id) REFERENCES Delivery_Partners(partner_id)
 );
 
 CREATE TABLE Shipments (
