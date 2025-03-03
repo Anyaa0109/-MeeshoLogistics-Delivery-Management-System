@@ -18,7 +18,8 @@ CREATE TABLE Orders (
     product_id INT NOT NULL,
     order_date DATE NOT NULL,
     status VARCHAR(20) NOT NULL,
-    partner_id INT NOT NULL,  
+    partner_id INT NOT NULL, 
+    total_price NUMBER(10,2),
     FOREIGN KEY (partner_id) REFERENCES Delivery_Partners(partner_id)
 );
 
@@ -60,11 +61,11 @@ COMMIT;
 
 Orders 
 
-INSERT INTO Orders (order_id, customer_id, product_id, order_date, status, partner_id)
-SELECT 1, 101, 301, TO_DATE('2024-01-10', 'YYYY-MM-DD'), 'Shipped',1 FROM dual UNION ALL
-SELECT 2, 102, 302, TO_DATE('2024-01-12', 'YYYY-MM-DD'), 'Pending',2 FROM dual UNION ALL
-SELECT 3, 103, 303, TO_DATE('2024-01-15', 'YYYY-MM-DD'), 'Delivered',3 FROM dual UNION ALL
-SELECT 4, 104, 304, TO_DATE('2024-01-18', 'YYYY-MM-DD'), 'Shipped',4 FROM dual;
+INSERT INTO Orders (order_id, customer_id, product_id, order_date, status, partner_id , total_price)
+SELECT 1, 101, 301, TO_DATE('2024-01-10', 'YYYY-MM-DD'), 'Shipped',1, 1500.50 FROM dual UNION ALL
+SELECT 2, 102, 302, TO_DATE('2024-01-12', 'YYYY-MM-DD'), 'Pending',2, 2500.75 FROM dual UNION ALL
+SELECT 3, 103, 303, TO_DATE('2024-01-15', 'YYYY-MM-DD'), 'Delivered',3, 1800.20 FROM dual UNION ALL
+SELECT 4, 104, 304, TO_DATE('2024-01-18', 'YYYY-MM-DD'), 'Shipped',4, 2200.00  FROM dual;
 
 COMMIT;
 
